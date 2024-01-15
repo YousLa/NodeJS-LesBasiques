@@ -1,24 +1,12 @@
-let express = require('express');
 const MongoClient = require('mongodb').MongoClient;
+const { ObjectId } = require('mongodb');
 
-let app = express();
 const url = 'mongodb://127.0.0.1:27017/';
 const mongoClient = new MongoClient(url);
 
 let moviesArray = [];
 
-app.listen(8080);
-// http://localhost:8080/movies
-app.get('/movies', function (req, res) {
-    readMovies().then(function () {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(moviesArray);
-    }
-    );
-
-})
-
-async function readMovies() {
+async function readMovie(id) {
     try {
         await mongoClient.connect();
         // console.log("You successfully connected to DB");
@@ -30,11 +18,11 @@ async function readMovies() {
                 Released_Year: 1
             }
         };
-        const selection = {};
-        moviesArray = await imdbCollection.find(selection, options).toArray();
-        for (let i = 0; i < moviesArray.length; i++) {
-            console.log(moviesArray[i]);
-        }
+        const selection = {
+            _id: new ObjectId(id)
+        };
+        movie = await imdbCollection.findOne(selection, options);
+        console.log(movie.Series_Title);
     }
     catch (error) {
         console.error(error);
@@ -43,3 +31,5 @@ async function readMovies() {
         await mongoClient.close();
     }
 }
+
+readMovie("65a1142ffc65ea9e291aba54");
