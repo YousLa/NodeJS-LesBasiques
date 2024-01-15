@@ -1,4 +1,5 @@
 // ! Exercice : Programmer app.js (Npde) qui fait serveur de fichiers (web) avec express
+// Serveur de fichiers, tous les fichiers dans le htdocs sont rendu
 let express = require('express');
 let app = express();
 // dirname reprends tout le chemin vers le dossier parent de notre fichier App.js
