@@ -1,48 +1,54 @@
 <html>
-    <form action="/movies" method="POST" id="addMovieForm"> 
-        <label for="Series_Title">Titre :</label> 
-        <input type="text" id="Series_Title" name="Series_Title"> 
-        <label for="Released_Year">Année :</label> 
-        <input type="text" id="Released_Year" name="Released_Year"> 
-        <button type="submit">Ajouter</button>
-    </form>
-    <script>
-        //https://simonplend.com/how-to-use-fetch-to-post-form-data-as-json-to-your-api/
-        const addMovieForm = document.getElementById("addMovieForm");    
-        addMovieForm.addEventListener("submit", handleFormSubmit);
+<form action="/movies" method="POST" id="addMovieForm">
+    <label for="Series_Title">Titre :</label>
+    <input type="text" id="Series_Title" name="Series_Title">
+    <p />
+    <label for="Released_Year">Année :</label>
+    <input type="text" id="Released_Year" name="Released_Year">
+    <p />
+    <button type="submit">Ajouter</button>
+    <button type="button" id="cancelButton">Annuler</button>
+</form>
+<script>
+    //https://simonplend.com/how-to-use-fetch-to-post-form-data-as-json-to-your-api/
+    const addMovieForm = document.getElementById("addMovieForm");
+    addMovieForm.addEventListener("submit", handleFormSubmit);
+    const cancelButtonForm = document.getElementById("cancelButton");
+    cancelButtonForm.addEventListener("click", () => { window.location.href = "http://127.0.0.1:8000"; });
 
-        async function handleFormSubmit(event) {
-            event.preventDefault();
-            const form = event.currentTarget;
-            const url = form.action;
-            try {
-                const formData = new FormData(form);
-                const responseData = await postFormDataAsJson({ url, formData });
-                // retourne à la page d'accueil
-                window.location.href = "http://127.0.0.1:8000";
-            } 
-            catch (error) {
-                console.error(error);
-            }
+    async function handleFormSubmit(event) {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const url = form.action;
+        try {
+            const formData = new FormData(form);
+            const responseData = await postFormDataAsJson({ url, formData });
+            // retourne à la page d'accueil
+            window.location.href = "http://127.0.0.1:8000";
         }
-        
-        async function postFormDataAsJson({ url, formData }) {
-            const plainFormData = Object.fromEntries(formData.entries());
-            const formDataJsonString = JSON.stringify(plainFormData);
-            const fetchOptions = {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Accept: "application/json",
-                },
-                body: formDataJsonString,
-            };
-            const response = await fetch(url, fetchOptions);
-            if (!response.ok) {
-                const errorMessage = await response.text();
-                throw new Error(errorMessage);
-            }       
-            return response.json();
+        catch (error) {
+            console.error(error);
         }
-    </script>
+    }
+
+    async function postFormDataAsJson({ url, formData }) {
+        const plainFormData = Object.fromEntries(formData.entries());
+        const formDataJsonString = JSON.stringify(plainFormData);
+        const fetchOptions = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+            body: formDataJsonString,
+        };
+        const response = await fetch(url, fetchOptions);
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
+        }
+        return response.json();
+    }
+</script>
+
 </html>

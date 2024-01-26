@@ -1,15 +1,86 @@
 <html>
-    <form action="/movies" method="PUT" id="editMovieForm"> 
-        <label for="Series_Title">Titre :</label> 
-        <input type="text" id="Series_Title" name="Series_Title"> 
-        <label for="Released_Year">Année :</label> 
-        <input type="text" id="Released_Year" name="Released_Year"> 
-        <button type="submit">Modifier</button>
-        </form>
-        <script>
-            const queryString = window.location.search;
-            const urlParams = new URLSearchParams(queryString);
-            const product = urlParams.get('id');
-            
-        </script>
+<form action="/movies" method="PUT" id="editMovieForm">
+    <label for="Poster_Link">Lien vers l'image de l'affiche :</label>
+    <input type="text" id="Poster_Link" name="Poster_Link">
+    <p />
+    <label for="Series_Title">Titre :</label>
+    <input type="text" id="Series_Title" name="Series_Title">
+    <p />
+    <label for="Released_Year">Année :</label>
+    <input type="text" id="Released_Year" name="Released_Year">
+    <p />
+    <label for="Runtime">Durée :</label>
+    <input type="text" id="Runtime" name="Runtime">
+    <p />
+    <button type="submit">Modifier</button>
+    <button type="button" id="cancelButton">Annuler</button>
+</form>
+<script>
+    const queryString = window.location.search;
+    const urlParams = new URLSearchParams(queryString);
+    const idMovie = urlParams.get('id');
+
+    fillForm();
+
+    const editMovieForm = document.getElementById("editMovieForm");
+    editMovieForm.addEventListener("submit", handleFormSubmit);
+    const cancelButtonForm = document.getElementById("cancelButton");
+    cancelButtonForm.addEventListener("click", () => { window.location.href = "http://127.0.0.1:8000"; });
+
+    async function handleFormSubmit(event) {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const url = form.action + "/" + idMovie;
+        console.log(url);
+        try {
+            const formData = new FormData(form);
+            const responseData = await putFormDataAsJson({ url, formData });
+            // retourne à la page d'accueil
+            window.location.href = "http://127.0.0.1:8000";
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+
+    async function putFormDataAsJson({ url, formData }) {
+        const plainFormData = Object.fromEntries(formData.entries());
+        const formDataJsonString = JSON.stringify(plainFormData);
+        const fetchOptions = {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+            },
+            body: formDataJsonString,
+        };
+        const response = await fetch(url, fetchOptions);
+        if (!response.ok) {
+            const errorMessage = await response.text();
+            throw new Error(errorMessage);
+        }
+        return response.json();
+    }
+
+    function fillForm() {
+        fetch('http://127.0.0.1:8000/movies/' + idMovie)
+            .then(function (response) {
+                return response.json();
+            })
+            .then(function (movie) {
+                const posterForm = document.getElementById("Poster_Link");
+                posterForm.value = movie.Poster_Link;
+                const titleForm = document.getElementById("Series_Title");
+                titleForm.value = movie.Series_Title;
+                const releaseForm = document.getElementById("Released_Year");
+                releaseForm.value = movie.Released_Year;
+                const runtimeForm = document.getElementById("Runtime");
+                runtimeForm.value = movie.Runtime;
+            })
+            .catch(function (err) {
+                console.log("Something went wrong!", err);
+            });
+    }
+</script>
+
 </html>
