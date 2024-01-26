@@ -2,21 +2,24 @@
 
 <head>
     <script src="./scripts/main.js" defer></script>
+    <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/main.css">
 </head>
 
-<body>
-    <h1>Voici la liste des films : </h1>
+<body class="border">
+    <h1 class="mainTitle">Voici la liste des films : </h1>
     <div id="movies">
-        <div id="moviesList"></div>
-        <div id="movieDetail">
-            <img id="movieImage" src="" />
-            <h2 id="movieTitle"></h2>
+        <div class="content" id="moviesList"></div>
+        <div class="content" id="movieDetail">
+            <div class="fiche">
+                <h2 id="movieTitle"></h2>
+                <img id="movieImage" src="" />
+            </div>
             <a id="trashAnchor" href="">
-                <img id="trashImage" src="" />
+                <img id="trashImage" class="icon" src="" />
             </a>
             <a id="addAnchor" href="">
-                <img id="addImage" src="" />
+                <img id="addImage" class="icon" src="" />
             </a>
         </div>
     </div>

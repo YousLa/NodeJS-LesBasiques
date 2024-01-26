@@ -8,56 +8,76 @@ const mongoClient = new MongoClient(url);
 let app = express();
 app.use('/', express.static(__dirname + "/htdocs"));
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.listen(8000);
 
-let moviesArray = [];
-let movie;
-
-app.get('/movies', function (req, res) {
+app.get('/movies', function (request, response) {
     // aller dans la BD Mongo chercher la liste des films
-    readMovies().then(function () {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(moviesArray);
+    readMovies().then(function (moviesArray) {
+        response.setHeader('Content-Type', 'application/json');
+        response.status(200).send(moviesArray);
     });
 });
 
-app.get('/movies/:id', function (req, res) {
+app.get('/movies/:id', function (request, response) {
     // aller dans la BD Mongo chercher un film dont on a l'Id
-    readMovie(req.params.id).then(function () {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(movie);
+    readMovie(request.params.id).then(function (movie) {
+        response.setHeader('Content-Type', 'application/json');
+        response.status(200).send(movie);
     });
 });
 
-app.delete('/movies/:id', function (req, res) {
+app.delete('/movies/:id', function (request, response) {
     // aller dans la BD Mongo deleter un film dont on a l'Id
-    deleteMovie(req.params.id).then(function () {
-        res.status(204).send();
+    deleteMovie(request.params.id).then(function () {
+        response.status(204).send();
     });
 });
 
-app.post('/movies', function (req, res) {
+app.post('/movies', function (request, response) {
     // aller créer un film dans la BD Mongo
-    console.log(req.body.title);
     const newMovie = {
-        Poster_Link: req.body.Poster_Link,
-        Series_Title: req.body.Series_Title,
-        Released_Year: req.body.Released_Year,
-        Runtime: req.body.Runtime,
-        Genre: req.body.Genre,
-        IMDB_Rating: req.body.IMDB_Rating,
-        Overview: req.body.Overview,
-        Meta_score: req.body.Meta_score,
-        Director: req.body.Director,
-        Star1: req.body.Star1,
-        Star2: req.body.Star2,
-        Star3: req.body.Star3,
-        Star4: req.body.Star4,
-        No_of_Votes: req.body.No_of_Votes
+        Poster_Link: request.body.Poster_Link,
+        Series_Title: request.body.Series_Title,
+        Released_Year: request.body.Released_Year,
+        Runtime: request.body.Runtime,
+        Genre: request.body.Genre,
+        IMDB_Rating: request.body.IMDB_Rating,
+        Overview: request.body.Overview,
+        Meta_score: request.body.Meta_score,
+        Director: request.body.Director,
+        Star1: request.body.Star1,
+        Star2: request.body.Star2,
+        Star3: request.body.Star3,
+        Star4: request.body.Star4,
+        No_of_Votes: request.body.No_of_Votes
     };
-    createMovie(newMovie).then(function () {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(newMovie);
+    createMovie(newMovie).then(function (createdMovie) {
+        response.setHeader('Content-Type', 'application/json');
+        response.status(201).send(createdMovie);
+    });
+});
+
+app.put('/movies/:id', function (request, response) {
+    const movieToUpdate = {
+        Poster_Link: request.body.Poster_Link,
+        Series_Title: request.body.Series_Title,
+        Released_Year: request.body.Released_Year,
+        Runtime: request.body.Runtime,
+        Genre: request.body.Genre,
+        IMDB_Rating: request.body.IMDB_Rating,
+        Overview: request.body.Overview,
+        Meta_score: request.body.Meta_score,
+        Director: request.body.Director,
+        Star1: request.body.Star1,
+        Star2: request.body.Star2,
+        Star3: request.body.Star3,
+        Star4: request.body.Star4,
+        No_of_Votes: request.body.No_of_Votes
+    };
+    updateMovie(request.params.id, movieToUpdate).then(function (updatedMovie) {
+        response.setHeader('Content-Type', 'application/json');
+        response.status(200).send(updatedMovie);
     });
 });
 
@@ -73,9 +93,7 @@ async function readMovies() {
         };
         const selection = {};
         moviesArray = await imdbCollection.find(selection, options).toArray();
-        for (let i = 0; i < moviesArray.length; i++) {
-            console.log(moviesArray[i].Series_Title);
-        }
+        return moviesArray;
     }
     catch (error) {
         console.error(error);
@@ -97,7 +115,8 @@ async function readMovie(idMovieParameter) {
             _id: new ObjectId(idMovieParameter)
         };
         movie = await imdbCollection.findOne(selection, options);
-        console.log(movie.Series_Title);
+        //console.log(movie.Series_Title);
+        return movie;
     }
     catch (error) {
         console.error(error);
@@ -131,6 +150,28 @@ async function createMovie(newMovie) {
         const moviesDatabase = mongoClient.db("movies");
         const imdbCollection = moviesDatabase.collection("imdb");
         const result = await imdbCollection.insertOne(newMovie);
+        return result;
+    }
+    catch (error) {
+        console.error(error);
+    }
+    finally {
+        await mongoClient.close();
+    }
+}
+
+async function updateMovie(idMovieParameter, updatedMovie) {
+    try {
+        await mongoClient.connect();
+        const moviesDatabase = mongoClient.db("movies");
+        const imdbCollection = moviesDatabase.collection("imdb");
+        const filter = { _id: new ObjectId(idMovieParameter) };
+        // this option instructs the method to create a document
+        // if no documents match the filter
+        const options = { upsert: true };
+        const updatedDocument = { $set: updatedMovie };
+        const result = await imdbCollection.updateOne(filter, updatedDocument, options);
+        return result;
     }
     catch (error) {
         console.error(error);

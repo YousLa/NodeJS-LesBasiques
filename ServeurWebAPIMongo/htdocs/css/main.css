@@ -1,27 +1,145 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400;500;700;900&display=swap');
+
+* {
+    font-family: 'Roboto', sans-serif !important;
+    color: white;
+}
+
+html {
+    min-height: 100vh;
+    max-height: 100vh;
+}
+
+body {
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+}
+
 #movies {
     display: flex;
-    gap: 2rem;
+    column-gap: 2rem;
+    height: 40rem;
 }
 
 #moviesList {
-    width: 50%;
-    border: solid 1px black;
-    padding: 2rem;
+    overflow: scroll;
 }
 
-#moviesList li {
+li {
     list-style-type: none;
     margin: .5rem;
-    border: solid 1px lightpink;
     padding: .5rem;
+
 }
 
-#moviesList li:hover {
-    background-color: lightgray;
+li:hover {
+    background-color: #ffffff55;
 }
 
-#movieDetailS {
-    width: 50%;
-    border: solid 1px black;
+#movieTitle {
+    font-size: x-large;
+}
+
+a {
+    width: 100%;
+    color: white;
+    text-decoration: none;
+}
+
+
+
+@-webkit-keyframes rotate {
+    from {
+        -webkit-transform: rotateZ(0deg);
+        transform: rotateZ(0deg);
+    }
+
+    to {
+        -webkit-transform: rotateZ(360deg);
+        transform: rotateZ(360deg);
+    }
+}
+
+@keyframes rotate {
+    from {
+        -webkit-transform: rotateZ(0deg);
+        transform: rotateZ(0deg);
+    }
+
+    to {
+        -webkit-transform: rotateZ(360deg);
+        transform: rotateZ(360deg);
+    }
+}
+
+.border {
+    background-image: -webkit-gradient(linear, right top, left top, from(red), to(blue));
+    background-image: linear-gradient(to left, red, blue);
+}
+
+.border::before {
+    background-image: -webkit-gradient(linear, right top, left top, from(red), to(blue));
+    background-image: linear-gradient(to left, red, blue);
+    content: "";
+    position: absolute;
+    z-index: -1;
+    scale: 1.1;
+    -webkit-filter: blur(25px);
+    filter: blur(25px);
+    -webkit-animation: rotate 4s linear infinite;
+    animation: rotate 4s linear infinite;
+
+}
+
+.content {
     padding: 2rem;
+    width: 40rem;
+    background-color: #111111;
+    border-radius: 19px;
+    scale: 0.9;
+}
+
+.mainTitle {
+    font-size: 5rem;
+    margin: 2rem;
+
+}
+
+.fiche {
+    height: fit-content;
+    display: flex;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+/* Scroll bar */
+
+/* ===== Scrollbar CSS ===== */
+/* Firefox */
+* {
+    scrollbar-width: auto;
+    scrollbar-color: #002aff #ffffff00;
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+    width: 16px;
+    height: 0px;
+    background-color: #ffffff55;
+    border-radius: 19px;
+
+}
+
+*::-webkit-scrollbar-track {
+    background: #ffffff00;
+}
+
+*::-webkit-scrollbar-thumb {
+    background-color: #ffffffb0;
+    border-radius: 19px;
+    height: 2rem;
 }
