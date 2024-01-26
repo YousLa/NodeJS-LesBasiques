@@ -1,0 +1,27 @@
+#movies {
+    display: flex;
+    gap: 2rem;
+}
+
+#moviesList {
+    width: 50%;
+    border: solid 1px black;
+    padding: 2rem;
+}
+
+#moviesList li {
+    list-style-type: none;
+    margin: .5rem;
+    border: solid 1px lightpink;
+    padding: .5rem;
+}
+
+#moviesList li:hover {
+    background-color: lightgray;
+}
+
+#movieDetailS {
+    width: 50%;
+    border: solid 1px black;
+    padding: 2rem;
+}

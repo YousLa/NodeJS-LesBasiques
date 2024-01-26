@@ -1,0 +1,15 @@
+<html>
+    <form action="/movies" method="PUT" id="editMovieForm"> 
+        <label for="Series_Title">Titre :</label> 
+        <input type="text" id="Series_Title" name="Series_Title"> 
+        <label for="Released_Year">Année :</label> 
+        <input type="text" id="Released_Year" name="Released_Year"> 
+        <button type="submit">Modifier</button>
+        </form>
+        <script>
+            const queryString = window.location.search;
+            const urlParams = new URLSearchParams(queryString);
+            const product = urlParams.get('id');
+            
+        </script>
+</html>
